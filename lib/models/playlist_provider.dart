@@ -13,19 +13,20 @@ class PlayListProvider extends ChangeNotifier{
         songName: 'SuperMan',
         artistName: 'EMINEM',
         alburmArtImagePath: "assets/images/3.jpg",
-        audioPath: 'assets/audio/superman.mp3'
+        audioPath: 'audio/superman.mp3'
     ),
     Song(
         songName: 'Money',
         artistName: 'Dragons',
         alburmArtImagePath: "assets/images/2.jpg",
-        audioPath: 'assets/audio/apnigarhi.mp3'
+        audioPath: 'audio/apnigarhi.mp3'
     ),
     Song(
         songName: 'Pain',
         artistName: 'Ryan Jones',
         alburmArtImagePath: "assets/images/1.jpg",
-        audioPath: 'assets/audio/everyday'
+        //dont include  assets  when using audio player
+        audioPath: 'audio/everyday.mp3'
     ),
 
   ];
@@ -92,7 +93,7 @@ class PlayListProvider extends ChangeNotifier{
   //play next song
   void playNextSong(){
     if(_currentSongIndex!=null){
-      if(_currentSongIndex !< _playlist.length -1){
+      if(_currentSongIndex! < _playlist.length -1){
         //go to next if itsnot last song
         currentSongIndex=_currentSongIndex! + 1;
       }else{
@@ -105,10 +106,12 @@ class PlayListProvider extends ChangeNotifier{
   //play prevoius song
   void playPreviousSong()async{
     //if more than 2 seconds have passes then restart
-    if(_currentDuration.inSeconds>2){}
+    if(_currentDuration.inSeconds >2){
+      seek(Duration.zero);
+    }
     //if less then 3 seconds passed then go to prevous
     else{
-      if(_currentSongIndex !>0){
+      if(_currentSongIndex! >0){
         currentSongIndex=_currentSongIndex! -1;
       }else{
         currentSongIndex=_playlist.length -1;

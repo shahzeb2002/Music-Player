@@ -7,6 +7,13 @@ import 'package:provider/provider.dart';
 class Songpage extends StatelessWidget {
   const Songpage({super.key});
 
+  //convert secongs
+  String formatTime(Duration duration){
+    String twoDigitSecongs=duration.inSeconds.remainder(60).toString().padLeft(2,'0');
+    String formattedTime="${duration.inMinutes}: $twoDigitSecongs";
+    return formattedTime;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<PlayListProvider>(builder: (context, value, child) {
@@ -87,14 +94,14 @@ class Songpage extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             //start time
-                            Text('44:33'),
+                            Text(formatTime(value.currentDuration)),
                             //shuffle
                             Icon(Icons.shuffle),
                             //repear
                             Icon(Icons.repeat),
 
                             //end
-                            Text('22'),
+                            Text(formatTime(value.totalDuration)),
 
 
                           ],),
@@ -105,11 +112,18 @@ class Songpage extends StatelessWidget {
                             thumbShape: RoundSliderThumbShape(enabledThumbRadius: 0)
                         ),
                         child: Slider(
-                          max: 100,
+                          max: value.totalDuration.inSeconds.toDouble(),
                           min: 0,
                           activeColor: Colors.green,
-                          value: 60,
-                          onChanged: (value) {},),
+                          value: value.currentDuration.inSeconds.toDouble(),
+                          onChanged: (double double) {
+                            //duration when dragging slider around
+                          },
+                          onChangeEnd: (double double) {
+                            //sliding finished
+                            value.seek(Duration(seconds: double.toInt()));
+                          },
+                        ),
                       )
 
                     ],
@@ -122,9 +136,7 @@ class Songpage extends StatelessWidget {
                     children: [
                       //skip previus
                       Expanded(child: GestureDetector(
-                          onTap: () {
-
-                          },
+                          onTap: value.playPreviousSong,
                           child: NeuBox(
                               child: Icon(Icons.skip_previous)
                           )
@@ -137,11 +149,9 @@ class Songpage extends StatelessWidget {
                       Expanded(
                           flex: 2,
                           child: GestureDetector(
-                              onTap: () {
-
-                              },
+                              onTap: value.pauseOrResume,
                               child: NeuBox(
-                                  child: Icon(Icons.play_arrow)
+                                  child: Icon(value.isPlaying?Icons.pause :Icons.play_arrow)
                               )
                           )
                       ),
@@ -150,9 +160,7 @@ class Songpage extends StatelessWidget {
 
                       //skip forward
                       Expanded(child: GestureDetector(
-                          onTap: () {
-
-                          },
+                          onTap:value.playNextSong,
                           child: NeuBox(
                               child: Icon(Icons.skip_next)
                           )
