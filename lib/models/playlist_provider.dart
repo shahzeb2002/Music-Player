@@ -1,5 +1,7 @@
 
 
+import 'dart:math';
+
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:musicplayer/models/song.dart';
@@ -106,6 +108,8 @@ class PlayListProvider extends ChangeNotifier{
   bool _isPlaying=false;
   bool _isShuffle=false;
 
+  //audio controls-------------------------------------------------
+
   //play the song
   void play()async{
     final String path=_playlist[_currentSongIndex!].audioPath;
@@ -144,19 +148,35 @@ class PlayListProvider extends ChangeNotifier{
   void seek(Duration position) async{
     await _audioPlayer.seek(position);
   }
+  void playNextSong() {
+    if (_playlist.isEmpty) return;
 
-  //play next song
-  void playNextSong(){
-    if(_currentSongIndex!=null){
-      if(_currentSongIndex! < _playlist.length -1){
-        //go to next if itsnot last song
-        currentSongIndex=_currentSongIndex! + 1;
-      }else{
-        //if it is last song loop to first song
-        currentSongIndex=0;
+    if (_isShuffle) {
+      // use your shufflePlay when shuffle mode is ON
+      shufflePlay();
+    } else {
+      // normal next
+      if (_currentSongIndex == null) return;
+      if (_currentSongIndex! < _playlist.length - 1) {
+        currentSongIndex = _currentSongIndex! + 1;
+      } else {
+        currentSongIndex = 0; // loop back
       }
     }
   }
+
+  // //play next song
+  // void playNextSong(){
+  //   if(_currentSongIndex!=null){
+  //     if(_currentSongIndex! < _playlist.length -1){
+  //       //go to next if itsnot last song
+  //       currentSongIndex=_currentSongIndex! + 1;
+  //     }else{
+  //       //if it is last song loop to first song
+  //       currentSongIndex=0;
+  //     }
+  //   }
+  // }
 
   //play prevoius song
   void playPreviousSong()async{
@@ -174,6 +194,24 @@ class PlayListProvider extends ChangeNotifier{
     }
 
     }
+    //shuffle
+  void shufflePlay() {
+    if (_playlist.isEmpty) return;
+    final random = Random();
+    int randomIndex = random.nextInt(_playlist.length);
+
+    // If a song is already playing, avoid repeating the same one
+    if (_currentSongIndex != null && _playlist.length > 1) {
+      while (randomIndex == _currentSongIndex) {
+        randomIndex = random.nextInt(_playlist.length);
+      }
+    }
+    currentSongIndex = randomIndex;
+  }
+  void toggleShuffle() {
+    _isShuffle = !_isShuffle;
+    notifyListeners();
+  }
 
   //listen to duartion
   void listenToDuration(){
@@ -207,6 +245,7 @@ class PlayListProvider extends ChangeNotifier{
   bool get isPlaying=> _isPlaying;
   Duration get currentDuration =>_currentDuration;
   Duration get totalDuration => _totalDuration;
+  bool get isShuffle => _isShuffle;
 
 
 

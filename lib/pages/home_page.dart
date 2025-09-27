@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:musicplayer/components/fonts.dart';
 import 'package:musicplayer/components/my_drawer.dart';
 import 'package:musicplayer/models/playlist_provider.dart';
 import 'package:musicplayer/models/song.dart';
 import 'package:musicplayer/pages/SongPage.dart';
 import 'package:provider/provider.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -41,7 +43,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(
-        title: Text('Music Player'),
+        title: Text('Music Player',style: AppTextStyles.appBar,),
         centerTitle: true,
         backgroundColor: Theme.of(context).colorScheme.secondary,
       ),
@@ -59,8 +61,8 @@ class _HomePageState extends State<HomePage> {
               final Song song=playlist[index];
 
               return ListTile(
-                title: Text(song.songName),
-                subtitle: Text(song.artistName),
+                title: Text(song.songName,style: AppTextStyles.heading,),
+                subtitle: Text(song.artistName,style: AppTextStyles.subheading,),
                 leading: SizedBox(
                   height: 50,width: 50,
                     child: ClipRRect(

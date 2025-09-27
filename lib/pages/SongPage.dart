@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:musicplayer/components/fonts.dart';
 import 'package:musicplayer/components/neu_box.dart';
 import 'package:musicplayer/models/playlist_provider.dart';
 import 'package:provider/provider.dart';
@@ -39,7 +41,7 @@ class Songpage extends StatelessWidget {
                     children: [
                       IconButton(onPressed: () => Navigator.pop(context), icon: Icon(Icons.arrow_back)),
 
-                      Text('P L A Y L I S T',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18),),
+                      Text('P L A Y L I S T',style: AppTextStyles.appBar,),
                       IconButton(onPressed: () {
 
                       }, icon: Icon(Icons.menu)),
@@ -67,9 +69,8 @@ class Songpage extends StatelessWidget {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(currentSong.songName,style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),),
-                                Text(currentSong.artistName),
-
+                                Text(currentSong.songName,style: AppTextStyles.heading),
+                                Text(currentSong.artistName,style: AppTextStyles.subheading,),
                               ],
                             ),
                             //heart
@@ -96,7 +97,9 @@ class Songpage extends StatelessWidget {
                             //start time
                             Text(formatTime(value.currentDuration)),
                             //shuffle
-                            Icon(Icons.shuffle),
+                            IconButton(onPressed: (){
+                              value.toggleShuffle();
+                            }, icon: Icon(Icons.shuffle,color: value.isShuffle?Colors.green:Colors.black,)),
                             //repear
                             Icon(Icons.repeat),
 
