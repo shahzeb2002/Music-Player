@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:musicplayer/models/playlist_provider.dart';
 import 'package:musicplayer/pages/home_page.dart';
+import 'package:musicplayer/splash_screen.dart';
 
 import 'package:musicplayer/themes/theme_provider.dart';
 import 'package:provider/provider.dart';
@@ -26,7 +27,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
 
-      home:  HomePage(),
+      home:  SplashScreen(),
       theme: Provider.of<ThemeProvider>(context).themeData,
     );
   }

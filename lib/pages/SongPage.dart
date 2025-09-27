@@ -39,7 +39,7 @@ class Songpage extends StatelessWidget {
                     children: [
                       IconButton(onPressed: () => Navigator.pop(context), icon: Icon(Icons.arrow_back)),
 
-                      Text('PlayList'),
+                      Text('P L A Y L I S T',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18),),
                       IconButton(onPressed: () {
 
                       }, icon: Icon(Icons.menu)),

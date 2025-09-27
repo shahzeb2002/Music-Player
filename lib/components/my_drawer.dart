@@ -10,10 +10,10 @@ class MyDrawer extends StatelessWidget {
       backgroundColor: Theme.of(context).colorScheme.background,
       child: Column(
         children: [
-          DrawerHeader(child:
-          Icon(Icons.music_note_outlined,
-            size: 60,
-            color:Theme.of(context).colorScheme.inversePrimary ,)
+          DrawerHeader(
+
+            child:Image(image: AssetImage('assets/images/spotify_logo.png')),
+
           ),
 
           Padding(

@@ -61,7 +61,11 @@ class _HomePageState extends State<HomePage> {
               return ListTile(
                 title: Text(song.songName),
                 subtitle: Text(song.artistName),
-                leading: Image.asset(song.alburmArtImagePath),
+                leading: SizedBox(
+                  height: 50,width: 50,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(6),
+                        child: Image.asset(song.alburmArtImagePath,fit: BoxFit.cover,))),
                 onTap: () => goToSong(index),
               );
             },

@@ -27,6 +27,60 @@ class PlayListProvider extends ChangeNotifier{
         alburmArtImagePath: "assets/images/1.jpg",
         //dont include  assets  when using audio player
         audioPath: 'audio/everyday.mp3'
+    ), Song(
+        songName: 'All Eyes on Me',
+        artistName: 'Tupac Shakur',
+        alburmArtImagePath: "assets/images/tupac.jpg",
+        //dont include  assets  when using audio player
+        audioPath: 'audio/alleyes.mp3'
+    ), Song(
+        songName: 'Dusk Till Dawn',
+        artistName: 'Zayn Malik',
+        alburmArtImagePath: "assets/images/dusktill.jpg",
+        //dont include  assets  when using audio player
+        audioPath: 'audio/dusk.mp3'
+    ), Song(
+        songName: 'Lamhe',
+        artistName: 'Mitraz',
+        alburmArtImagePath: "assets/images/mitraz.jpg",
+        //dont include  assets  when using audio player
+        audioPath: 'audio/Lamhe.mp3'
+    ), Song(
+        songName: 'Nights',
+        artistName: 'Tquilla',
+        alburmArtImagePath: "assets/images/nights.jpg",
+        //dont include  assets  when using audio player
+        audioPath: 'audio/Nights.mp3'
+    ), Song(
+        songName: 'Something',
+        artistName: 'Wizard Khalifa',
+        alburmArtImagePath: "assets/images/something.jpg",
+        //dont include  assets  when using audio player
+        audioPath: 'audio/Something.mp3'
+    ), Song(
+        songName: 'Sun Flower',
+        artistName: 'Post Malone',
+        alburmArtImagePath: "assets/images/post.jpg",
+        //dont include  assets  when using audio player
+        audioPath: 'audio/Sunflower.mp3'
+    ), Song(
+        songName: 'You Right',
+        artistName: 'Doja Cat',
+        alburmArtImagePath: "assets/images/youright.jpg",
+        //dont include  assets  when using audio player
+        audioPath: 'audio/YouRight.mp3'
+    ),Song(
+        songName: 'Fair Trade',
+        artistName: 'Drake',
+        alburmArtImagePath: "assets/images/drake.jpg",
+        //dont include  assets  when using audio player
+        audioPath: 'audio/fiar.mp3'
+    ),Song(
+        songName: 'Everyday Normal Guy 2',
+        artistName: ' JonLajoie',
+        alburmArtImagePath: "assets/images/everyday.jpg",
+        //dont include  assets  when using audio player
+        audioPath: 'audio/normal.mp3'
     ),
 
   ];
@@ -35,7 +89,7 @@ class PlayListProvider extends ChangeNotifier{
   int? _currentSongIndex;
 
 
-  //audio player
+  //audio---------------------------------------------------------------------
   final AudioPlayer _audioPlayer =AudioPlayer();
 
 
@@ -50,6 +104,7 @@ class PlayListProvider extends ChangeNotifier{
 
   //initially not playong
   bool _isPlaying=false;
+  bool _isShuffle=false;
 
   //play the song
   void play()async{
@@ -141,6 +196,8 @@ class PlayListProvider extends ChangeNotifier{
   }
 
   //dispose audio player
+
+  //--------------------------------------------------------------------------------------
 
 
   //getters
