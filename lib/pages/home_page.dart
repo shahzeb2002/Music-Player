@@ -49,6 +49,7 @@ class _HomePageState extends State<HomePage> {
         centerTitle: true,
         backgroundColor: Theme.of(context).colorScheme.secondary,
       ),
+
       drawer: MyDrawer(),
       body: Consumer<PlayListProvider>(
         builder: (context, value, child) {
@@ -90,6 +91,24 @@ class _HomePageState extends State<HomePage> {
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(6),
                               child: Image.asset(song.alburmArtImagePath,fit: BoxFit.cover,))),
+
+                      trailing: Consumer<PlayListProvider>(builder: (context, value, child) {
+                        final isCurrentSong=value.currentSongIndex ==index;
+                        final isPlaying=value.isPlaying &&isCurrentSong;
+                        return IconButton(
+                            onPressed: () {
+                              if(isCurrentSong){
+                                value.pauseOrResume();
+                              }else{
+                                value.currentSongIndex=index;
+                                value.play();
+                              }
+
+                        }, icon: Icon(isPlaying?Icons.pause_circle:Icons.play_circle,
+                          color: isPlaying?Colors.green:Colors.grey.shade800));
+
+                      },),
+
                       onTap: () => goToSong(index),
                     );
                   },
@@ -99,7 +118,24 @@ class _HomePageState extends State<HomePage> {
           );
         }
       ),
-      
+      floatingActionButton: Consumer<PlayListProvider>(
+        builder: (context, player, child) {
+          // only show FAB when a song is selected
+          if (player.currentSongIndex == null) return const SizedBox.shrink();
+          return FloatingActionButton(
+            onPressed: () {
+              player.pauseOrResume(); // hide mini-player
+            },
+            child:  Icon(player.isPlaying ? Icons.pause : Icons.play_arrow,
+              color: Colors.white,
+              size: 32,
+            ),
+          );
+        },
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endContained,
+
+
     );
   }
 }

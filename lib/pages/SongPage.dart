@@ -147,7 +147,6 @@ class Songpage extends StatelessWidget {
                       ),
                       SizedBox(width: 20,),
 
-
                       //play pause
                       Expanded(
                           flex: 2,
