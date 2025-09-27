@@ -18,6 +18,8 @@ class _HomePageState extends State<HomePage> {
 
   //getting playlist provider
   late final dynamic playListProvider;
+  // TextEditingController _searchController = TextEditingController();
+  // String _searchQuery = "";
 
   @override
   void initState() {
@@ -51,26 +53,49 @@ class _HomePageState extends State<HomePage> {
       body: Consumer<PlayListProvider>(
         builder: (context, value, child) {
         //getting playlist
-          final List<Song> playlist=value.playlist;
+          final List<Song> playlist=value.filteredPlaylist;
+          // final filteredSongs = playlist.where((song) =>
+          // song.songName.toLowerCase().contains(_searchQuery) || song.artistName.toLowerCase().contains(_searchQuery)).toList();
 
           //return listview ui
-          return ListView.builder(
-            itemCount: playlist.length,
-            itemBuilder: (context, index) {
-              //geting indivifaul song
-              final Song song=playlist[index];
+          return Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField(
+                  decoration: InputDecoration(
+                    hintText: "Search songs...",
+                    prefixIcon: Icon(Icons.search),
 
-              return ListTile(
-                title: Text(song.songName,style: AppTextStyles.heading,),
-                subtitle: Text(song.artistName,style: AppTextStyles.subheading,),
-                leading: SizedBox(
-                  height: 50,width: 50,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(6),
-                        child: Image.asset(song.alburmArtImagePath,fit: BoxFit.cover,))),
-                onTap: () => goToSong(index),
-              );
-            },
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  onChanged: (value) {
+                    context.read<PlayListProvider>().setSearchQuery(value);
+                  },
+                ),
+              ),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: playlist.length,
+                  itemBuilder: (context, index) {
+                    //geting indivifaul song
+                    final Song song=playlist[index];
+                    return ListTile(
+                      title: Text(song.songName,style: AppTextStyles.heading,),
+                      subtitle: Text(song.artistName,style: AppTextStyles.subheading,),
+                      leading: SizedBox(
+                        height: 50,width: 50,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(6),
+                              child: Image.asset(song.alburmArtImagePath,fit: BoxFit.cover,))),
+                      onTap: () => goToSong(index),
+                    );
+                  },
+                ),
+              ),
+            ],
           );
         }
       ),

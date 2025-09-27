@@ -237,6 +237,22 @@ class PlayListProvider extends ChangeNotifier{
 
   //--------------------------------------------------------------------------------------
 
+  //search music query--------------------------------------------------
+  String _searchQuery = "";
+
+  List<Song> get filteredPlaylist {
+    if (_searchQuery.isEmpty) return _playlist;
+    return _playlist.where((song) =>
+    song.songName.toLowerCase().contains(_searchQuery) ||
+        song.artistName.toLowerCase().contains(_searchQuery)
+    ).toList();
+  }
+
+  // update query
+  void setSearchQuery(String query) {
+    _searchQuery = query.toLowerCase();
+    notifyListeners();
+  }
 
   //getters
   List<Song> get playlist=>_playlist;
