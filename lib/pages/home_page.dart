@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:musicplayer/components/floating_action.dart';
 import 'package:musicplayer/components/fonts.dart';
 import 'package:musicplayer/components/my_drawer.dart';
 import 'package:musicplayer/models/playlist_provider.dart';
@@ -62,6 +63,7 @@ class _HomePageState extends State<HomePage> {
           //return listview ui
           return Column(
             children: [
+              //search bar
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextField(
@@ -69,9 +71,11 @@ class _HomePageState extends State<HomePage> {
                     hintText: "Search songs...",
                     hintStyle: TextStyle(color: Colors.grey),
                     prefixIcon: Icon(Icons.search,),
-
+                    filled: true,
+                    fillColor: Theme.of(context).cardColor,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none
                     ),
                   ),
                   onChanged: (value) {
@@ -79,39 +83,56 @@ class _HomePageState extends State<HomePage> {
                   },
                 ),
               ),
+
+              //music list
+
               Expanded(
                 child: ListView.builder(
                   itemCount: playlist.length,
                   itemBuilder: (context, index) {
                     //geting indivifaul song
                     final Song song=playlist[index];
-                    return ListTile(
-                      title: Text(song.songName,style: AppTextStyles.heading(context),),
-                      subtitle: Text(song.artistName,style: AppTextStyles.subheading(context),),
-                      leading: SizedBox(
-                        height: 50,width: 50,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(6),
-                              child: Image.asset(song.alburmArtImagePath,fit: BoxFit.cover,))),
+                    return Container(
+                      margin: const EdgeInsets.symmetric(vertical: 6),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.surface,
+                        borderRadius: BorderRadius.circular(15),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.05),
+                            blurRadius: 6,
+                            offset: const Offset(0, 3),
+                          ),
+                        ],
+                      ),
+                      child: ListTile(
+                        title: Text(song.songName,style: AppTextStyles.heading(context),),
+                        subtitle: Text(song.artistName,style: AppTextStyles.subheading(context),),
+                        leading: SizedBox(
+                            height: 50,width: 50,
+                            child: ClipRRect(
+                                borderRadius: BorderRadius.circular(6),
+                                child: Image.asset(song.alburmArtImagePath,fit: BoxFit.cover,))),
 
-                      trailing: Consumer<PlayListProvider>(builder: (context, value, child) {
-                        final isCurrentSong=value.currentSongIndex ==index;
-                        final isPlaying=value.isPlaying &&isCurrentSong;
-                        return IconButton(
-                            onPressed: () {
-                              if(isCurrentSong){
-                                value.pauseOrResume();
-                              }else{
-                                value.currentSongIndex=index;
-                                value.play();
-                              }
+                        trailing: Consumer<PlayListProvider>(builder: (context, value, child) {
+                          final isCurrentSong=value.currentSongIndex ==index;
+                          final isPlaying=value.isPlaying &&isCurrentSong;
+                          return IconButton(
+                              onPressed: () {
+                                if(isCurrentSong){
+                                  value.pauseOrResume();
+                                }else{
+                                  value.currentSongIndex=index;
+                                  value.play();
+                                }
 
-                        }, icon: Icon(isPlaying?Icons.pause_circle:Icons.play_circle,
-                          color: isPlaying?Colors.green:null));
+                              }, icon: Icon(isPlaying?Icons.pause_circle:Icons.play_circle,
+                              color: isPlaying?Colors.green:null));
 
-                      },),
+                        },),
 
-                      onTap: () => goToSong(index),
+                        onTap: () => goToSong(index),
+                      ),
                     );
                   },
                 ),
@@ -120,24 +141,10 @@ class _HomePageState extends State<HomePage> {
           );
         }
       ),
-      floatingActionButton: Consumer<PlayListProvider>(
-        builder: (context, player, child) {
-          // only show FAB when a song is selected
-          if (player.currentSongIndex == null) return const SizedBox.shrink();
-          return FloatingActionButton(
-
-            backgroundColor: Theme.of(context).colorScheme.secondary,
-            shape: StadiumBorder(),
-            onPressed: () {
-              player.pauseOrResume(); // hide mini-player
-            },
-            child:  Icon(player.isPlaying ? Icons.pause : Icons.play_arrow,
-              size: 32,
-            ),
-          );
-        },
-      ),
+      floatingActionButton: FloatingAction(),
       floatingActionButtonLocation: FloatingActionButtonLocation.endContained,
+
+
 
 
     );

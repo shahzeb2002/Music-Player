@@ -9,12 +9,9 @@ ThemeData lightMode=ThemeData(
   colorScheme: ColorScheme.light(
     background: Colors.white,
     primary: Colors.black,
-    secondary: Color(0xFF1DB954),
+    secondary: Colors.grey.shade600,
     inversePrimary: Colors.grey
-    // background: Colors.grey.shade300,
-    // primary: Colors.grey.shade500,
-    // secondary: Colors.grey.shade200,
-    // inversePrimary: Colors.grey.shade900
+
   ),
   textTheme: GoogleFonts.poppinsTextTheme(
     ThemeData.light().textTheme,

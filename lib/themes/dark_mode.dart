@@ -5,10 +5,10 @@ ThemeData darkMode = ThemeData(
   scaffoldBackgroundColor: Colors.black,
   cardColor: Colors.grey[900],   // 👈 tile background for dark mode
 
-  colorScheme: const ColorScheme.dark(
+  colorScheme: ColorScheme.dark(
     background: Colors.black,
     primary: Colors.white, // text/icons
-    secondary: Color(0xFF1DB954), // Spotify green for highlights
+    secondary: Colors.grey[500]!, // Spotify green for highlights
     inversePrimary: Colors.grey, // secondary text
   ),
 
