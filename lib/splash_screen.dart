@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:musicplayer/components/fonts.dart';
 import 'package:musicplayer/pages/home_page.dart';
 import 'package:musicplayer/themes/theme_provider.dart';
 
@@ -17,7 +18,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    Timer(Duration(seconds: 3), () {
+    Timer(Duration(seconds: 1), () {
       Navigator.push(context, MaterialPageRoute(builder: (context)=>HomePage()));
     },);
   }
@@ -32,7 +33,7 @@ class _SplashScreenState extends State<SplashScreen> {
         children: [
           Image(image: AssetImage('assets/images/spotify_logo.png')),
           SizedBox(height: 10,),
-          Text('Spotify',style: TextStyle(fontSize: 24,fontWeight: FontWeight.bold,color: Colors.green),)
+          Text('M& Player',style: AppTextStyles.appBar(context),)
           ,SizedBox(height: 10,),
           Text('Bringing Everyone Together',style: TextStyle(fontSize: 14,wordSpacing: 5),),
 

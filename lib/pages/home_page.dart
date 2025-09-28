@@ -43,11 +43,12 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
+      // backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(
-        title: Text('Music Player',style: AppTextStyles.appBar,),
+        title: Text('Music Player',style: AppTextStyles.appBar(context),),
         centerTitle: true,
-        backgroundColor: Theme.of(context).colorScheme.secondary,
+        elevation: 0,
+        backgroundColor: Theme.of(context).colorScheme.background,
       ),
 
       drawer: MyDrawer(),
@@ -66,7 +67,8 @@ class _HomePageState extends State<HomePage> {
                 child: TextField(
                   decoration: InputDecoration(
                     hintText: "Search songs...",
-                    prefixIcon: Icon(Icons.search),
+                    hintStyle: TextStyle(color: Colors.grey),
+                    prefixIcon: Icon(Icons.search,),
 
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -84,8 +86,8 @@ class _HomePageState extends State<HomePage> {
                     //geting indivifaul song
                     final Song song=playlist[index];
                     return ListTile(
-                      title: Text(song.songName,style: AppTextStyles.heading,),
-                      subtitle: Text(song.artistName,style: AppTextStyles.subheading,),
+                      title: Text(song.songName,style: AppTextStyles.heading(context),),
+                      subtitle: Text(song.artistName,style: AppTextStyles.subheading(context),),
                       leading: SizedBox(
                         height: 50,width: 50,
                           child: ClipRRect(
@@ -105,7 +107,7 @@ class _HomePageState extends State<HomePage> {
                               }
 
                         }, icon: Icon(isPlaying?Icons.pause_circle:Icons.play_circle,
-                          color: isPlaying?Colors.green:Colors.grey.shade800));
+                          color: isPlaying?Colors.green:null));
 
                       },),
 
@@ -123,11 +125,13 @@ class _HomePageState extends State<HomePage> {
           // only show FAB when a song is selected
           if (player.currentSongIndex == null) return const SizedBox.shrink();
           return FloatingActionButton(
+
+            backgroundColor: Theme.of(context).colorScheme.secondary,
+            shape: StadiumBorder(),
             onPressed: () {
               player.pauseOrResume(); // hide mini-player
             },
             child:  Icon(player.isPlaying ? Icons.pause : Icons.play_arrow,
-              color: Colors.white,
               size: 32,
             ),
           );

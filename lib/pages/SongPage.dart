@@ -41,7 +41,7 @@ class Songpage extends StatelessWidget {
                     children: [
                       IconButton(onPressed: () => Navigator.pop(context), icon: Icon(Icons.arrow_back)),
 
-                      Text('P L A Y L I S T',style: AppTextStyles.appBar,),
+                      Text('P L A Y L I S T',style: AppTextStyles.appBar(context),),
                       IconButton(onPressed: () {
 
                       }, icon: Icon(Icons.menu)),
@@ -69,8 +69,8 @@ class Songpage extends StatelessWidget {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(currentSong.songName,style: AppTextStyles.heading),
-                                Text(currentSong.artistName,style: AppTextStyles.subheading,),
+                                Text(currentSong.songName,style: AppTextStyles.heading(context)),
+                                Text(currentSong.artistName,style: AppTextStyles.subheading(context),),
                               ],
                             ),
                             //heart

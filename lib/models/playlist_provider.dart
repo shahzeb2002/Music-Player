@@ -8,6 +8,8 @@ import 'package:musicplayer/models/song.dart';
 
 
 
+
+enum SortType { songName, artistName }
 class PlayListProvider extends ChangeNotifier{
 
   final List<Song> _playlist=[
@@ -86,9 +88,12 @@ class PlayListProvider extends ChangeNotifier{
     ),
 
   ];
-
+//==========================================================
   //cuurent song playing
   int? _currentSongIndex;
+  // track sorting type
+  SortType _sortType = SortType.songName;
+
 
 
   //audio---------------------------------------------------------------------
@@ -101,6 +106,7 @@ class PlayListProvider extends ChangeNotifier{
 
   //constructor
   PlayListProvider(){
+    _sortPlaylist(); // sort once on startup
     listenToDuration();
   }
 
@@ -235,7 +241,32 @@ class PlayListProvider extends ChangeNotifier{
 
   //dispose audio player
 
-  //--------------------------------------------------------------------------------------
+
+
+
+  //=====================sort============================================================
+  // inside PlayListProvider constructor
+
+    // sort songs by name alphabetically (A–Z)
+  void _sortPlaylist() {
+    if (_sortType == SortType.songName) {
+      _playlist.sort((a, b) =>
+          a.songName.toLowerCase().compareTo(b.songName.toLowerCase()));
+    } else if (_sortType == SortType.artistName) {
+      _playlist.sort((a, b) =>
+          a.artistName.toLowerCase().compareTo(b.artistName.toLowerCase()));
+    }
+    notifyListeners();
+  }
+
+  void setSortType(SortType type) {
+    _sortType = type;
+    _sortPlaylist();
+  }
+
+  SortType get sortType => _sortType;
+
+
 
   //search music query--------------------------------------------------
   String _searchQuery = "";
@@ -254,6 +285,8 @@ class PlayListProvider extends ChangeNotifier{
     notifyListeners();
   }
 
+
+  //====================================================================
   //getters
   List<Song> get playlist=>_playlist;
   int? get currentSongIndex=>_currentSongIndex;
@@ -265,7 +298,7 @@ class PlayListProvider extends ChangeNotifier{
 
 
 
-  //setters
+  //setters=========================================================================
 
   set currentSongIndex(int? newIndex){
     _currentSongIndex=newIndex;

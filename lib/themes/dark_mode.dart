@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 
-ThemeData darkMode=ThemeData(
-  colorScheme: ColorScheme.dark(
-      background: Colors.grey.shade900,
-      primary: Colors.grey.shade600,
-      secondary: Colors.grey.shade800,
-      inversePrimary: Colors.grey.shade300
+ThemeData darkMode = ThemeData(
+  brightness: Brightness.dark,
+  scaffoldBackgroundColor: Colors.black,
+  cardColor: Colors.grey[900],   // 👈 tile background for dark mode
+
+  colorScheme: const ColorScheme.dark(
+    background: Colors.black,
+    primary: Colors.white, // text/icons
+    secondary: Color(0xFF1DB954), // Spotify green for highlights
+    inversePrimary: Colors.grey, // secondary text
   ),
+
 );

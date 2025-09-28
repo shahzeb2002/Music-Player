@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:musicplayer/components/fonts.dart';
 import 'package:musicplayer/themes/theme_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -11,12 +12,14 @@ class SettingsPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(
-        title: Text('Settings'),
-        backgroundColor: Theme.of(context).colorScheme.secondary,
+        title: Text('Settings',style: AppTextStyles.appBar(context),),
+        backgroundColor: Theme.of(context).colorScheme.background,
+        centerTitle: true,
+        elevation: 0,
       ),
       body: Container(
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.secondary,
+          color: Theme.of(context).cardColor,
               borderRadius: BorderRadius.circular(15)
 
         ),
