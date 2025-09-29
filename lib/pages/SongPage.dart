@@ -1,181 +1,247 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:musicplayer/components/fonts.dart';
 import 'package:musicplayer/components/neu_box.dart';
 import 'package:musicplayer/models/playlist_provider.dart';
 import 'package:provider/provider.dart';
 
-class Songpage extends StatelessWidget {
+class Songpage extends StatefulWidget {
   const Songpage({super.key});
 
-  //convert secongs
-  String formatTime(Duration duration){
-    String twoDigitSecongs=duration.inSeconds.remainder(60).toString().padLeft(2,'0');
-    String formattedTime="${duration.inMinutes}: $twoDigitSecongs";
-    return formattedTime;
+  @override
+  State<Songpage> createState() => _SongpageState();
+}
+
+class _SongpageState extends State<Songpage> {
+  bool _isDragging = false;
+  double _dragValue = 0.0;
+
+  String formatTime(Duration duration) {
+    final minutes = duration.inMinutes.toString().padLeft(2, '0');
+    final seconds = duration.inSeconds.remainder(60).toString().padLeft(2, '0');
+    return "$minutes:$seconds";
   }
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<PlayListProvider>(builder: (context, value, child) {
-      //get playlist
-      final playlist=value.playlist;
+    return Consumer<PlayListProvider>(
+      builder: (context, provider, child) {
+        final playlist = provider.playlist;
 
-      //get current song
-      final currentSong=playlist[value.currentSongIndex ?? 0];
+        // if no songs available
+        if (playlist.isEmpty) {
+          return const Scaffold(
+            body: Center(child: Text("No songs available")),
+          );
+        }
 
-      //return scaffold ui
-      return Scaffold(
+        final currentIndex = provider.currentSongIndex ?? 0;
+        final currentSong = playlist[currentIndex];
+
+        final totalSeconds = provider.totalDuration.inSeconds.toDouble();
+        final currentSeconds = provider.currentDuration.inSeconds.toDouble();
+        final sliderMax = (totalSeconds > 0) ? totalSeconds : 1.0;
+        final sliderValue = _isDragging
+            ? _dragValue
+            : currentSeconds.clamp(0.0, sliderMax);
+
+        // Album art widget (network or fallback)
+        Widget albumArt;
+        if (currentSong.albumArtUrl != null &&
+            currentSong.albumArtUrl!.isNotEmpty) {
+          albumArt = Image.network(
+            currentSong.albumArtUrl!,
+            height: 250,
+            width: double.infinity,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) => const SizedBox(
+              height: 250,
+              child: Center(child: Icon(Icons.music_note, size: 80)),
+            ),
+          );
+        } else {
+          albumArt = const SizedBox(
+            height: 250,
+            child: Center(child: Icon(Icons.music_note, size: 80)),
+          );
+        }
+
+        return Scaffold(
           backgroundColor: Theme.of(context).colorScheme.background,
-          // appBar: AppBar(title: Text("Song"),centerTitle: true,),
-          body:SafeArea(
+          body: SafeArea(
             child: Padding(
-              padding: const EdgeInsets.only(left: 25.0,right: 25,bottom: 25,top: 20),
+              padding: const EdgeInsets.only(
+                left: 25,
+                right: 25,
+                bottom: 25,
+                top: 20,
+              ),
               child: Column(
-
                 children: [
-                  //appbar
+                  // Top bar
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      IconButton(onPressed: () => Navigator.pop(context), icon: Icon(Icons.arrow_back)),
-
-                      Text('P L A Y L I S T',style: AppTextStyles.appBar(context),),
-                      IconButton(onPressed: () {
-
-                      }, icon: Icon(Icons.menu)),
-
-
-                    ],
-                  ),
-                  SizedBox(height: 35,),
-
-                  //album
-                  NeuBox(child: Column(
-                    children: [
-                      //album picture
-                      ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: Image.asset(currentSong.alburmArtImagePath)
+                      IconButton(
+                        onPressed: () => Navigator.pop(context),
+                        icon: const Icon(Icons.arrow_back),
                       ),
-                      //song and artist name and icon
-                      Padding(
-                        padding: const EdgeInsets.all(15.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            //song and artist
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(currentSong.songName,style: AppTextStyles.heading(context)),
-                                Text(currentSong.artistName,style: AppTextStyles.subheading(context),),
-                              ],
-                            ),
-                            //heart
-                            Icon(Icons.favorite,color: Colors.red,),
-
-
-
-                          ],),
-                      )
+                      Text(
+                        'P L A Y L I S T',
+                        style: AppTextStyles.appBar(context),
+                      ),
+                      IconButton(
+                        onPressed: () {},
+                        icon: const Icon(Icons.menu),
+                      ),
                     ],
-                  )
+                  ),
+                  const SizedBox(height: 20),
+
+                  // Album + metadata box
+                  NeuBox(
+                    child: Column(
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: albumArt,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(15.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              // Song + artist
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      currentSong.songName,
+                                      style: AppTextStyles.heading(context),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      currentSong.artistName,
+                                      style: AppTextStyles.subheading(context),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              const Icon(Icons.favorite, color: Colors.red),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
 
-                  SizedBox(height: 25,),
-                  //song duration and control
+                  const SizedBox(height: 20),
+
+                  // Progress / controls
                   Column(
                     children: [
-                      //controls
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                        padding: const EdgeInsets.symmetric(horizontal: 4.0),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            //start time
-                            Text(formatTime(value.currentDuration)),
-                            //shuffle
-                            IconButton(onPressed: (){
-                              value.toggleShuffle();
-                            }, icon: Icon(Icons.shuffle,color: value.isShuffle?Colors.green:Colors.black,)),
-                            //repear
-                            Icon(Icons.repeat),
-
-                            //end
-                            Text(formatTime(value.totalDuration)),
-
-
-                          ],),
+                            // start time
+                            Text(formatTime(provider.currentDuration)),
+                            // shuffle
+                            IconButton(
+                              onPressed: () {
+                                provider.toggleShuffle();
+                              },
+                              icon: Icon(
+                                Icons.shuffle,
+                                color: provider.isShuffle
+                                    ? Colors.green
+                                    : Colors.grey,
+                              ),
+                            ),
+                            // (repeat removed — not implemented in provider)
+                            // end time
+                            Text(formatTime(provider.totalDuration)),
+                          ],
+                        ),
                       ),
-                      //durations
+
+                      // Slider (drag handled locally)
                       SliderTheme(
                         data: SliderTheme.of(context).copyWith(
-                            thumbShape: RoundSliderThumbShape(enabledThumbRadius: 0)
+                          thumbShape: const RoundSliderThumbShape(
+                            enabledThumbRadius: 0,
+                          ),
                         ),
                         child: Slider(
-                          max: value.totalDuration.inSeconds.toDouble(),
                           min: 0,
+                          max: sliderMax,
+                          value: sliderValue,
                           activeColor: Colors.green,
-                          value: value.currentDuration.inSeconds.toDouble(),
-                          onChanged: (double double) {
-                            //duration when dragging slider around
+                          onChanged: (double value) {
+                            if (provider.totalDuration.inSeconds <= 0) return;
+                            setState(() {
+                              _isDragging = true;
+                              _dragValue = value;
+                            });
                           },
-                          onChangeEnd: (double double) {
-                            //sliding finished
-                            value.seek(Duration(seconds: double.toInt()));
+                          onChangeEnd: (double value) {
+                            if (provider.totalDuration.inSeconds <= 0) return;
+                            provider.seek(Duration(seconds: value.toInt()));
+                            setState(() {
+                              _isDragging = false;
+                            });
                           },
                         ),
-                      )
-
+                      ),
                     ],
                   ),
 
-                  SizedBox(height: 25,),
+                  const SizedBox(height: 20),
 
-                  //playback controls
+                  // Playback controls (previous, play/pause, next)
                   Row(
                     children: [
-                      //skip previus
-                      Expanded(child: GestureDetector(
-                          onTap: value.playPreviousSong,
-                          child: NeuBox(
-                              child: Icon(Icons.skip_previous)
-                          )
-                      )
-                      ),
-                      SizedBox(width: 20,),
-
-                      //play pause
                       Expanded(
-                          flex: 2,
-                          child: GestureDetector(
-                              onTap: value.pauseOrResume,
-                              child: NeuBox(
-                                  child: Icon(value.isPlaying?Icons.pause :Icons.play_arrow)
-                              )
-                          )
+                        child: GestureDetector(
+                          onTap: () {
+                            provider.playPreviousSong();
+                          },
+                          child: const NeuBox(child: Icon(Icons.skip_previous)),
+                        ),
                       ),
-
-                      SizedBox(width: 20,),
-
-                      //skip forward
-                      Expanded(child: GestureDetector(
-                          onTap:value.playNextSong,
+                      const SizedBox(width: 18),
+                      Expanded(
+                        flex: 2,
+                        child: GestureDetector(
+                          onTap: () {
+                            provider.pauseOrResume();
+                          },
                           child: NeuBox(
-                              child: Icon(Icons.skip_next)
-                          )
-                      )
+                            child: Icon(
+                              provider.isPlaying
+                                  ? Icons.pause
+                                  : Icons.play_arrow,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 18),
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () => provider.playNextSong(),
+                          child: const NeuBox(child: Icon(Icons.skip_next)),
+                        ),
                       ),
                     ],
-                  )
-
+                  ),
                 ],
               ),
             ),
-          )
-      );
-    });
+          ),
+        );
+      },
+    );
   }
 }
